@@ -7,7 +7,12 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.example.pokedex.data.entity.Pokemon
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,6 +27,17 @@ class MainActivity : AppCompatActivity() {
         viewModelFactory
     }
 
+    object PokemonComparator: DiffUtil.ItemCallback<Pokemon>(){
+        override fun areItemsTheSame(oldItem: Pokemon, newItem: Pokemon): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Pokemon, newItem: Pokemon): Boolean {
+            return oldItem == newItem
+        }
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -32,6 +48,17 @@ class MainActivity : AppCompatActivity() {
             val nameView = findViewById<TextView>(R.id.pokemon_name_text)
             nameView.text = it.name
         }
+
+        val recyclerView = findViewById<RecyclerView>(R.id.recycler_pokemon_list)
+        val adapter = PokePageAdapter(PokemonComparator)
+
+        recyclerView.adapter = adapter
+        lifecycleScope.launch {
+            viewModel.pager.flow.collectLatest { pokemonPageSource ->
+                adapter.submitData(pokemonPageSource)
+            }
+        }
+
     }
 
     fun onFindPokemon(){

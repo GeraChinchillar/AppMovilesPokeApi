@@ -33,7 +33,7 @@ interface PokeService {
     @GET("pokemon/{query}")
     suspend fun getPokemon(@Path("query")query: String) : Pokemon
 
-    @GET
+    @GET("pokemon")
     suspend fun getListPokemon (@Query("limit")limit: Int): PokemonListResponse
 
     @GET

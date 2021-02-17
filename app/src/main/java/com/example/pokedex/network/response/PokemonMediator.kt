@@ -50,12 +50,12 @@ class PokemonMediator (
             //Cargar la pagina
 
             val response = if (loadKey == null){
-                API.retrofitService.getListPokemon(50)
+                API.retrofitService.getListPokemon(10)
             } else{
                 API.retrofitService.getListPokemonByUrl(loadKey)
             }
 
-            var pokemons = response.results.map {
+            val pokemons = response.results.map {
                 API.retrofitService.getPokemonByUrl(it.url)
             }
 

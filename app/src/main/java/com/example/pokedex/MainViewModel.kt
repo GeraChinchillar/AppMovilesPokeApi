@@ -23,7 +23,7 @@ class MainViewModel(
 
     @OptIn(ExperimentalPagingApi::class)
     val pager = Pager(
-        config = PagingConfig(pageSize = 50),
+        config = PagingConfig(pageSize = 10),
         remoteMediator = PokemonMediator(database, PokeAPI)
     ){
         pokemonRepository.getSource()
